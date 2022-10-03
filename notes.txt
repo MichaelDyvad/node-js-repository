@@ -1,0 +1,20 @@
+//Buildtools
+Maven       vs.         NPM
+pom.xml                 package.json
+
+        Sections / Responsibilities
+Meta data               Meta data
+Dependencies            Dependencies
+Life cycles             Scripts
+
+
+//FileTypes
+serverfiles = alt der ikke er i public mappen
+client filer = alt der er i public mappen
+
+//Dette er client side rendering
+app.get("/contact", (req, res) => {
+    res.sendFile(path.resolve("./public/contact/contact.html"))
+})
+
+//nodemon

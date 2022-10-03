@@ -1,0 +1,4 @@
+cross-env: npm install --save-dev cross-env
+nodemon
+
+husk at sæt zoom funktiob

@@ -20,10 +20,10 @@ console.log(recentBarbieMovies);
 // map, reduce, filter
 
 /* Loop advice
-Only use for loops if you are dong "finger counting", 
+Only use for loops if you are doing "finger counting", 
 IE counting to a number
 
-Don't use enhamced for loops
+Don't use enhanced for loops
 
 Only use forEach if you are doing someting and dont care about the result,
 IE populating the dom with elements

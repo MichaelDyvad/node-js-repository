@@ -5,19 +5,42 @@ import path from "path";
 //Et bibliotek der skal instantieres
 const app = express();
 
+import { renderPage, battlePage } from "./util/templateEngine.js";
+
+const frontpagePage = renderPage("/frontpage/frontpage.html", 
+{   
+    tabtitle: "Pokemon", 
+    cssLink:`<link rel="stylesheet" href="/pages/frontpage/frontpage.css">`
+})
+
+//skal gøres
+const contactPage = renderPage("/contact/contact.html", 
+{
+
+})
+
 app.use(express.static("public"))   
 
 //Http, endpoint, callback
 app.get("/", (req, res) => {
-    res.sendFile(path.resolve("./public/frontpage/frontpage.html"));
-    
+    res.send(frontpagePage);
 });
 
-app.get("/battle",(req, res) => {
-    res.sendFile(path.resolve("./public/battle/battle.html"))
+app.get("/battle", (req, res) => {
+    const randomPokemon = "pikachu"
+    res.redirect(`${randomPokemon}`)
 })
 
-app.get("/api/pokemon", (req, res) => {
+app.get("/battle/:pokemonName",(req, res) => {
+    res.send(battlePage.replace("%%TAB_TITLE%%", `Battle ${req.params.pokemonName}`));
+})
+
+//Dette er client side rendering
+app.get("/contact", (req, res) => {
+    res.send(contactPage)
+})
+
+app.get("/api/:pokemon", (req, res) => {
     fetch("https://pokeapi.co/api/v2/pokemon")
     .then(res => res.json())
     .then(data => {
@@ -37,5 +60,3 @@ const server = app.listen(PORT, (error) => {
 });
 //Linje nedeunder kører før app.listen, hvilket skyldes at javacsript ikke kører sekventielt
 //console.log("is the server running?");
-
-

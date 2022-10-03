@@ -4,18 +4,20 @@ const app = express();
 
 app.use(express.json());
 
+let currentId = 2;
+
 app.listen(8080, () => {
     console.log("Server is running on port", 8080)
 });
 
 
 //Lavet en array med de forskellige våben og bruger deres index
-const myWeapons = [
-    {id:"0", name: "AK-47", ammunition: "40round" },
-    {id:"1",  name: "Colt", ammunition: "22mm" },
-    {id:"2",  name: "Glock", ammunition: "22mm" },
-    {id:"3",  name: "Knife", ammunition: "hands" },
-    {id:"4",  name: "Bazooka", ammunition: "rockets" }
+let myWeapons = [
+    {id:"1", name: "AK-47", ammunition: "40round" },
+    {id:"2",  name: "Colt", ammunition: "22mm" },
+    {id:"3",  name: "Glock", ammunition: "22mm" },
+    {id:"4",  name: "Knife", ammunition: "hands" },
+    {id:"5",  name: "Bazooka", ammunition: "rockets" }
 ];
 
 //Henter alle våben på endpointed /weapons
@@ -28,15 +30,17 @@ app.get("/weapons", (req, res) => {
 
 //Weapons bliver fundet på id i url og der bliver brugt indeksering på myArray til det specifikke våben
 app.get("/weapons/:id", (req, res) => {
-    res.send({ weapon: myWeapons[req.params.id] })
+    const foundWeapon = myWeapons.find(weapon => weapon.id === Number(req.params.id))
+    //res.send({ weapon: myWeapons[req.params.id] })
+    res.send({ data: foundWeapon })
 })
 
 //Opretter et nyt våben til arsenalet
 app.post("/weapons", (req, res) => {
     const postWeapon = req.body
-    myWeapons.push(postWeapon)
-    res.send("post route reached")
-    console.log(myWeapons)
+    postWeapon.id = ++currentId;
+    myWeapons.push(postWeapon);
+    res.send({data: postWeapon})
 })
 
 //Opdatere hele våben ressourcen på et id
@@ -54,25 +58,27 @@ app.put("/weapons/:id", (req, res) => {
 
 //Opdatere dele af våben ressourcen på et id
 app.patch("/weapons/:id", (req, res) => {
-    const idPatch = req.params.id;
-    const {name, ammunition} = req.body;
-    const weaponToBeUpdated = myWeapons.find((weapon) => weapon.id === idPatch)
-    
-    if(name){
-        weaponToBeUpdated.name = name;
+    const foundIndex = myWeapons.findIndex(weapon => weapon.id === Number(req.params.id))
+
+    if(foundIndex !== -1){
+        const foundWeapon = myWeapons[foundIndex];
+        const weaponToUpdate = {...foundWeapon, ...req.body, id: Number(req.params.id)};
+        myWeapons[foundIndex] = weaponToUpdate;
+        res.send({data: weaponToUpdate});
+    }else{
+        res.status(404).send({ data: undefined, message: `No Weapon found by id: ${req.params.id}` });
     }
 
-    if(ammunition){
-        weaponToBeUpdated.ammunition = ammunition;
-    }
-    
-    res.send(`updated ${idPatch}`)
 })
 
 //Sletter et våben på et id
 app.delete("/weapons/:id", (req, res) => {
-    const idDelete = req.params;
-    myWeapons.splice([idDelete], 1)
-    
-    res.send("deleted")
+    const foundIndex = myWeapons.findIndex(weapon => weapon.id === Number(req.params.id))
+    if(foundIndex !== -1){
+        const deletedWeapon = myWeapons.splice(foundIndex, 1)[0];
+        res.send({ data: deletedWeapon });
+    }else{
+        res.status(404).send({ data: undefined, message: `No Weapon found by id: ${req.params.id}` });
+    }
+    //, 1 gør den kun sletter 1 element
 })

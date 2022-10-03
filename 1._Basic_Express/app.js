@@ -3,6 +3,8 @@ const express = require("express");
 // instantiate the library express
 const app = express();
 
+app.use(express.json());
+
 // route
 app.get("/", (request, response) => {
     response.send({ message: "Created my first route. Check." });
@@ -53,3 +55,31 @@ app.listen(8080, () => {
 //2.
 // query parameters (query string)
 // /deers?key=value&key2=value2
+
+
+app.post("/actors", (req, res) => {
+    console.log(req.body)
+    res.send({data: req.body});
+})
+
+//Redirect
+app.get("/lookunderbed", (req, res) => {
+    let flashlight = req.query.flashlight
+    if(flashlight === "true"){
+        res.send({message: "You are safe"});
+    }else{
+        res.redirect("/monsters")
+    }
+    
+})
+
+app.get("/monsters", (req, res) => {
+    res.send({data: "Scrazy breezy monster comming for u"})
+})
+
+//Den amerikanske uge starter søndag og hvis man fx bruger .getMonth() er det index, så september er 8
+const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+app.get("/timezone", (req, res) => {
+    let dateNow = new Date();
+    res.send({date: days[dateNow.getDay()]})
+})
