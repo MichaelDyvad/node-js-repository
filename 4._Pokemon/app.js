@@ -5,7 +5,17 @@ import path from "path";
 //Et bibliotek der skal instantieres
 const app = express();
 
-import { renderPage, battlePage } from "./util/templateEngine.js";
+import pokemonRouter from "./routers/pokemonRouter.js"
+app.use(pokemonRouter);
+
+import { renderPage, injectData } from "./util/templateEngine.js";
+
+const battlePage = renderPage("/battle/battle.html",
+    {
+        tabtitle: "Battle",
+        cssLink: `<link rel="stylesheet" href="/pages/battle/battle.css">`
+    }
+)
 
 const frontpagePage = renderPage("/frontpage/frontpage.html", 
 {   
@@ -16,6 +26,8 @@ const frontpagePage = renderPage("/frontpage/frontpage.html",
 //skal gøres
 const contactPage = renderPage("/contact/contact.html", 
 {
+    tabtitle: "Contact",
+    cssLink: `<link rel="stylesheet" href="/pages/contact/contact.css>`
 
 })
 
@@ -26,13 +38,18 @@ app.get("/", (req, res) => {
     res.send(frontpagePage);
 });
 
+const randomPokemon = ["pikachu", "slowpoke", "ditto"]
+
 app.get("/battle", (req, res) => {
-    const randomPokemon = "pikachu"
-    res.redirect(`${randomPokemon}`)
+res.redirect(`battle/${randomPokemon[Math.floor(Math.random() * randomPokemon.length)]}`)
 })
 
+
+//data injection
 app.get("/battle/:pokemonName",(req, res) => {
-    res.send(battlePage.replace("%%TAB_TITLE%%", `Battle ${req.params.pokemonName}`));
+    const pokemonName = req.params.pokemonName
+    let battlePageWithData = injectData(battlePage, {pokemonName})
+    res.send(battlePageWithData.replace("%%TAB_TITLE%%", `Battle ${req.params.pokemonName}`));
 })
 
 //Dette er client side rendering
@@ -40,13 +57,7 @@ app.get("/contact", (req, res) => {
     res.send(contactPage)
 })
 
-app.get("/api/:pokemon", (req, res) => {
-    fetch("https://pokeapi.co/api/v2/pokemon")
-    .then(res => res.json())
-    .then(data => {
-        res.send({pokemon:data})
-    })
-});
+
 
 const PORT = process.env.PORT || 8080;
 
