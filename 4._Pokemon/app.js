@@ -4,9 +4,22 @@ import { get } from "http";
 import path from "path";
 //Et bibliotek der skal instantieres
 const app = express();
+app.use(express.json());
+
+//den skal kører igennem alle lagene
+app.use(express.urlencoded({extended: true}))
 
 import pokemonRouter from "./routers/pokemonRouter.js"
 app.use(pokemonRouter);
+
+import battleRouter from "./routers/battleRouter.js"
+app.use(battleRouter.router);
+
+import battleResults from "./routers/battleResults.js"
+app.use(battleResults);
+
+import contactRouter from "./routers/contactRouter.js"
+app.use(contactRouter);
 
 import { renderPage, injectData } from "./util/templateEngine.js";
 
@@ -21,6 +34,10 @@ const frontpagePage = renderPage("/frontpage/frontpage.html",
 {   
     tabtitle: "Pokemon", 
     cssLink:`<link rel="stylesheet" href="/pages/frontpage/frontpage.css">`
+})
+
+const battleResultsPage = renderPage("/battleResults/battleResults.html", {
+    tabtitle: "battleResults"
 })
 
 //skal gøres
@@ -50,6 +67,10 @@ app.get("/battle/:pokemonName",(req, res) => {
     const pokemonName = req.params.pokemonName
     let battlePageWithData = injectData(battlePage, {pokemonName})
     res.send(battlePageWithData.replace("%%TAB_TITLE%%", `Battle ${req.params.pokemonName}`));
+})
+
+app.get("/battleResults", (req, res) => {
+    res.send(battleResultsPage)
 })
 
 //Dette er client side rendering

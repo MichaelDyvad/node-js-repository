@@ -12,7 +12,13 @@ const ratedBarbieMovies = barbieMovies.map((movie) => {
 
 const recentBarbieMovies = barbieMovies.filter((movie) => movie.year > 2005)
 
-console.log(recentBarbieMovies);
+const eachBarbaieMovie = barbieMovies.forEach((movie) => {
+    console.log(movie)
+})
+
+const reduceBarbieMovies = barbieMovies.reduce()
+
+//console.log(eachBarbaieMovie);    
 
 
 // loop methods
@@ -31,7 +37,7 @@ IE populating the dom with elements
 Always prefer funtional loop methods such as:
 map, filter and reduce.
 
-Map for mapping 1:1
+Map for mapping 1:1 
 Filter for filtering the array
 Reduce to reducing the content of the array
 */

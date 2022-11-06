@@ -2,3 +2,6 @@ cross-env: npm install --save-dev cross-env
 nodemon
 
 husk at sæt zoom funktiob
+
+npm create vite
+husk at starte med npm install i starten når svelte er installeret

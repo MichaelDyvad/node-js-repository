@@ -18,3 +18,10 @@ app.get("/contact", (req, res) => {
 })
 
 //nodemon
+
+
+Fordel ved serverside rendering
+webscaper
+SEO ranking
+
+attributter i html: id, class, src etc

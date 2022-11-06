@@ -1,8 +1,6 @@
 const pathVariables = location.pathname.split("/");
 const pokemonName = pathVariables[pathVariables.length-1];
 
-console.log("helloworld")
-
 fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`)
 .then(res => res.json())
 .then(pokemon => {
@@ -11,7 +9,6 @@ fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`)
     battlingPokemonImage.src = pokemon.sprites.other.dream_world.front_default
 
 
-    console.log(pokemon)
       const iWon = Math.random() >= 0.5;
       const whoWonHeader = document.getElementById("who-won");
       const pokemonNameHeader = document.getElementById("pokemon-name")
@@ -22,9 +19,16 @@ fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`)
         whoWonHeader.innerText = "You Lost!"
       }
       
-      setTimeout(() => {
+      const body = { 
+        pokemonBattled: pokemon.name,
+        iWon 
+    };
 
-      },3000)
+    fetch("/api/battles", {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: { "Content-type": "application/json" }
+    });
       
 
 })
